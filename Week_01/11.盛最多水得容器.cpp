@@ -1,4 +1,5 @@
 #include <vector>
+//夹逼法
 class solution
 {
 public:

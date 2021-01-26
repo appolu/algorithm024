@@ -1,5 +1,5 @@
 #include <vector>
-
+//非零值递增及交换。
 class solution {
 public:
 	void moveZeroes(vector<int> nums) {

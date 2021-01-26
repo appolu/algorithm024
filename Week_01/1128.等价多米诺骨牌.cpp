@@ -1,3 +1,4 @@
+//利用降维思路对二维数据进行处理，再利用求和公式快速计算。
 class Solution {
 public:
     int numEquivDominoPairs(vector<vector<int>>& dominoes) {

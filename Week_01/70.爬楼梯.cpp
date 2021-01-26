@@ -1,5 +1,5 @@
 #include <map>
-
+//斐波拉契数计算
 class solution {
 public:
 	map<int, int> stairDic;
