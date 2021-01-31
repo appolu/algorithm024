@@ -37,5 +37,32 @@ public:
 		}
 		return result;
 	}
+	//栈方法求解
+	int trap1(vector<int>& height) {
+		if (height.size() < 3) {
+			return 0;
+		}
+		int n = height.size();
+		int i = 0, j = n;
+		vector<int> h;
+		int result = 0;
+		while (i < j) {
+			while (!h.empty() && height[h.back()] < height[i]) {
+				int ch = height[h.back()];
+				h.pop_back();
+				if (h.empty()) {
+					break;
+				}
+				int left = h.back();
+				int w = i - left - 1;
+				int th = height[h.back()] - ch;
+				int fh = height[i] - ch;
+				th = th > fh ? fh : th;
+				result += w * (th);
+			}
+			h.push_back(i++);
+		}
+		return result;
+	}
 
 };
