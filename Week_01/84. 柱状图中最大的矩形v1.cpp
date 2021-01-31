@@ -23,6 +23,8 @@ public:
 				int area = h*(i - index-1);
 				areaMax = areaMax > area ? areaMax : area;
 			}
+			stack.push_back(i);
+
 		}
 		return areaMax;
     }
