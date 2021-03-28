@@ -1,65 +1,77 @@
 //https://leetcode-cn.com/problems/word-search-ii/
-class Trie{
-    struct TrieNode{
-        map<char,TrieNode*>child;
-        int end;
-        TrieNode():end(0){}
-    };
+struct TrieNode{
+    map<char,TrieNode*> child;
+    string word;
 
-    TrieNode *root;
-public:
-    bool find(string s,int match){
-        TrieNode* cur=root;
-        for(int i=0;i<s.size();i++){
-            if(cur->child.count(s[i])==0){
+    TrieNode() {
+    }
+
+    void insert( string s ){
+        TrieNode *triePtr = this;
+        for( char c : s ){
+            if( triePtr->child.count(c) == 0 )
+                triePtr->child[c] = new TrieNode();
+            triePtr = triePtr->child[c];
+        }
+        triePtr->word = s; 
+    }
+
+    bool match(string word,int match){
+        TrieNode *cur=this;
+        for(char c:word){
+            cur=cur->child[c];
+            if(cur==nullptr){
                 return false;
             }
-            cur=cur->child[s[i]];
         }
         if(match){
-            return cur->end==1;
+            return cur->word.size()>0;
         }
         return true;
     }
 
-    Trie(){
-        root=new TrieNode();
+    bool search(string word){
+        return match(word,1);
     }
+    void find( vector<vector<char>>& board, vector<vector<bool>> &mark, int x,int y, 
+    TrieNode *triePtr, vector<string> &ans ){
+        if( x<0 || x>=board.size() || y<0 || y>=board[0].size() || mark[x][y] || triePtr->child[board[x][y]]==nullptr )
+            return;
 
-    void insert(string s){
-        TrieNode *cur=root;
-        for(int i=0;i<s.size();i++){
-            if(cur->child.count(s[i])==0){
-                cur->child[s[i]]=new TrieNode();
-            }
-            cur=cur->child[s[i]];
+        triePtr = triePtr->child[board[x][y]];
+        mark[x][y] = true;
+
+        if( triePtr->word.size() ){
+            ans.push_back(triePtr->word);
+            triePtr->word = ""; 
         }
-        cur->end=1;
-    }
 
-    bool search(string s){
-        return find(s,1);
-    }
+        find(board, mark, x-1,y, triePtr, ans);
+        find(board, mark, x+1,y, triePtr, ans);
+        find(board, mark, x,y-1, triePtr, ans);
+        find(board, mark, x,y+1, triePtr, ans);
 
-    bool startWith(string s){
-        return find(s,0);
+        mark[x][y] = false;
     }
 };
 
 class Solution {
 public:
     vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
-        Trie tie;
-        for(int i=0;i<words.size();i++){
-            tie.insert(words[i]);
-        }
-        for(int i=0;i<board.size();i++){
-            for(int j=0;j<board[i].size();j++){
-                // if(tie.startWith(board[i][j])){
+        vector<string> ans;
+        TrieNode *root = new TrieNode();        
+        
+        for( string word : words )
+            root->insert(word);
 
-                // }
+        int x=board.size(), y=board[0].size();
+        vector<vector<bool>> mark(x, vector<bool>(y, false));
+        for( int i=0; i<x; i++ ){
+            for( int j=0; j<y; j++ ){
+                root->find(board, mark, i,j, root, ans);
             }
         }
-        return words;
+
+        return ans;
     }
 };
